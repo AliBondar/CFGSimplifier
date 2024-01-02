@@ -16,7 +16,7 @@ public class CFGSimplifier {
         removeNullProductions(grammar);
 
         // Remove unit productions
-//        removeUnitProductions(grammar);
+        removeUnitProductions(grammar);
 
         // Remove useless productions
         removeUselessProductions(grammar);
@@ -84,26 +84,32 @@ public class CFGSimplifier {
     }
 
     private static void removeUnitProductions(Map<Character, List<String>> grammar) {
-        // Implementation to remove unit productions
         Set<Character> unitProductions = new HashSet<>();
         for (Map.Entry<Character, List<String>> entry : grammar.entrySet()) {
             char variable = entry.getKey();
             List<String> productions = entry.getValue();
+            List<String> newProductions = new ArrayList<>();
             for (String production : productions) {
                 if (production.length() == 1 && Character.isUpperCase(production.charAt(0))) {
                     unitProductions.add(production.charAt(0));
+                } else {
+                    newProductions.add(production);
                 }
             }
+            grammar.put(variable, newProductions);
         }
 
         for (Map.Entry<Character, List<String>> entry : grammar.entrySet()) {
             char variable = entry.getKey();
             List<String> productions = entry.getValue();
-            productions.removeIf(production -> unitProductions.contains(production.charAt(0)));
+            List<String> updatedProductions = new ArrayList<>(productions);
             for (String production : productions) {
                 for (char unit : unitProductions) {
                     if (production.contains(String.valueOf(unit))) {
-                        productions.addAll(grammar.get(unit));
+                        updatedProductions.remove(production);
+                        updatedProductions.addAll(grammar.get(unit));
+                        grammar.put(variable, updatedProductions);
+                        break;
                     }
                 }
             }
