@@ -4,7 +4,7 @@ import java.util.*;
 
 public class CFGSimplifier {
     public static void main(String[] args) {
-        // Original context-free grammar
+
         Map<Character, List<String>> grammar = new HashMap<>();
         grammar.put('S', Arrays.asList("ABCd", "ABd", "ACd", "BCd", "Ad", "Bd", "d"));
         grammar.put('A', Arrays.asList("BC", "B", "C"));
@@ -12,16 +12,13 @@ public class CFGSimplifier {
         grammar.put('C', Arrays.asList("cC", "c"));
         grammar.put('D', Arrays.asList("d", "c"));
 
-        // Remove null productions
         removeNullProductions(grammar);
 
-        // Remove unit productions
         removeUnitProductions(grammar);
 
-        // Remove useless productions
         removeUselessProductions(grammar);
 
-        // Print the simplified grammar
+        //print final answer
         System.out.println("Simplified Grammar:");
         for (Map.Entry<Character, List<String>> entry : grammar.entrySet()) {
             System.out.print(entry.getKey() + " -> ");
@@ -65,7 +62,7 @@ public class CFGSimplifier {
             }
         } while (changed);
 
-        // Remove null productions from the grammar
+        //remove null productions
         for (Map.Entry<Character, List<String>> entry : grammar.entrySet()) {
             List<String> productions = entry.getValue();
             productions.removeIf(String::isEmpty);
@@ -117,7 +114,7 @@ public class CFGSimplifier {
     }
 
     private static void removeUselessProductions(Map<Character, List<String>> grammar) {
-        // Implementation to remove useless productions
+        //remove useless productions
         Set<Character> reachable = new HashSet<>();
         Set<Character> useful = new HashSet<>();
         useful.add('S');
@@ -147,7 +144,6 @@ public class CFGSimplifier {
             }
         } while (changed);
 
-        // Remove unreachable and non-useful productions
         grammar.keySet().retainAll(useful);
     }
 }
